@@ -11,37 +11,39 @@ import java.util.Set;
 @Table(name = "meeting")
 public class Meeting {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Set<Participant> participants = new HashSet<>();
     private long id;
-
-    @Column
     private String title;
-
-    @Column
     private String description;
-
-    @Column
     private String date;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "meetings")
-    Set<Participant> participants = new HashSet<>();
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
         return id;
     }
 
+    @Column
     public String getTitle() {
         return title;
     }
 
+    @Column
     public String getDescription() {
         return description;
     }
 
+    @Column
     public String getDate() {
         return date;
+    }
+
+//    @JsonIgnore
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "meeting_participant", joinColumns = {
+            @JoinColumn(name = "participant_login")}, inverseJoinColumns = {@JoinColumn(name = "meeting_id")})
+    public Set<Participant> getParticipants() {
+        return this.participants;
     }
 
     public void setId(long id) {
@@ -68,8 +70,7 @@ public class Meeting {
         this.participants.remove(participant);
     }
 
-    public Collection<Participant> getParticipants() {
-        return participants;
+    public void setParticipants(Set<Participant> participants) {
+        this.participants = participants;
     }
-
 }

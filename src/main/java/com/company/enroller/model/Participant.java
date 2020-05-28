@@ -11,32 +11,38 @@ import java.util.Set;
 @Table(name = "participant")
 public class Participant {
 
-    @Id
+    private Set<Meeting> meetings = new HashSet<Meeting>(0);
     private String login;
+    private String password;
+
+    @Id
+    public String getLogin() {
+        return login;
+    }
 
     @Column
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
+    public String getPassword() {
+        return password;
+    }
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "meeting_participant", joinColumns = {
-            @JoinColumn(name = "participant_login")}, inverseJoinColumns = {@JoinColumn(name = "meeting_id")})
-    Set<Meeting> meetings = new HashSet<>();
-
-    public String getLogin() {
-        return login;
+    @ManyToMany(mappedBy = "participants", fetch=FetchType.EAGER)
+    public Set<Meeting> getMeetings() {
+        return this.meetings;
     }
 
     public void setLogin(String login) {
         this.login = login;
     }
 
-    public String getPassword() {
-        return password;
-    }
+
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setMeetings(Set<Meeting> meetings) {
+        this.meetings = meetings;
     }
 }
