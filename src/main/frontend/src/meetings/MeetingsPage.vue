@@ -26,7 +26,9 @@
         props: ['username'],
         data() {
             return {
-                meetings: []
+                meetings: [],
+                message: '',
+                isError: false
             };
         },
         created () {
@@ -50,18 +52,16 @@
                 this.$http.post('meetings', meeting)
                     .then(response => {
                         this.fetchData();
-                        this.success('Spotkanie zostało dodane.');
                     })
                     .catch(() => this.failure('Dodawanie spotkania nieudane.'));
             },
             addMeetingParticipant(meeting) {
                 //meeting.participants.push(this.username);
-                this.$http.post('meetings/' + meeting.id + "/" + this.username, this.meetings.indexOf(meeting))
+                this.$http.post('participants/' + this.username + "/" + meeting.id)
                     .then(() => {
                         this.fetchData();
-                        this.success('Spotkanie zostało usunięte.');
                     })
-                    .catch(response => this.failure('Błąd przy usuwaniu spotkania. Kod odpowiedzi: ' + response.status));
+                    .catch(response => this.failure('Błąd przy dodawaniu uczestnika. Kod odpowiedzi: ' + response.status));
             },
             removeMeetingParticipant(meeting) {
                 meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
@@ -70,9 +70,16 @@
                 this.$http.delete('meetings/' + meeting.id, this.meetings.indexOf(meeting))
                     .then(() => {
                         this.fetchData();
-                        this.success('Spotkanie zostało usunięte.');
                     })
                     .catch(response => this.failure('Błąd przy usuwaniu spotkania. Kod odpowiedzi: ' + response.status));
+            },
+            success(message) {
+                this.message = message;
+                this.isError = false;
+            },
+            failure(message) {
+                this.message = message;
+                this.isError = true;
             }
         }
     }

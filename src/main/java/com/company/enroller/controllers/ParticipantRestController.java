@@ -1,6 +1,11 @@
 package com.company.enroller.controllers;
 
+import com.company.enroller.model.Meeting;
+import com.company.enroller.model.MeetingParticipant;
+import com.company.enroller.model.MeetingParticipantPK;
 import com.company.enroller.model.Participant;
+import com.company.enroller.persistence.MeetingParticipantService;
+import com.company.enroller.persistence.MeetingService;
 import com.company.enroller.persistence.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +20,10 @@ public class ParticipantRestController {
 
     @Autowired
     ParticipantService participantService;
+    @Autowired
+    MeetingParticipantService meetingParticipantService;
+    @Autowired
+    MeetingService meetingService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<?> getAll() {
@@ -61,5 +70,45 @@ public class ParticipantRestController {
         updatedParticipant.setLogin(login); // in case of login!=updatedParticipant.getLogin()
         participantService.update(updatedParticipant);
         return new ResponseEntity<Participant>(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(value = "/{login}/{id}", method = RequestMethod.POST)
+    public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @PathVariable("login") String login) {
+        Meeting foundMeeting = meetingService.findById(id);
+        Participant foundParticipant = participantService.findByLogin(login);
+        if (foundMeeting == null) {
+            return new ResponseEntity<>(
+                    "Unable to register. Meeting with id " + id + " doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+        if (foundParticipant == null) {
+            return new ResponseEntity<>(
+                    "Unable to register. Participant with login " + login + " doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        MeetingParticipant meetingParticipant = new MeetingParticipant();
+        meetingParticipant.setId(new MeetingParticipantPK(foundMeeting,foundParticipant));
+        meetingParticipantService.addMeetingParticipant(meetingParticipant);
+        return new ResponseEntity<>(foundParticipant, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{login}/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable("id") Long id, @PathVariable("login") String login) {
+        Meeting foundMeeting = meetingService.findById(id);
+        Participant foundParticipant = participantService.findByLogin(login);
+        if (foundMeeting == null) {
+            return new ResponseEntity<>(
+                    "Unable to delete. Meeting with id " + id + " doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+        if (foundParticipant == null) {
+            return new ResponseEntity<>(
+                    "Unable to register. Participant with login: " + login + " doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        meetingParticipantService.deleteFromMeeting(foundParticipant,foundMeeting);
+        return new ResponseEntity<>(foundParticipant, HttpStatus.OK);
     }
 }
