@@ -47,16 +47,26 @@
                     .catch();
             },
             addNewMeeting(meeting) {
-                this.meetings.push(meeting);
+                this.$http.post('meetings', meeting)
+                    .then(response => {
+                        this.fetchData();
+                        this.success('Spotkanie zostało dodane.');
+                    })
+                    .catch(() => this.failure('Dodawanie spotkania nieudane.'));
             },
             addMeetingParticipant(meeting) {
-                meeting.participants.push(this.username);
+                //meeting.participants.push(this.username);
+                this.$http.post('meetings/' + meeting.id + "/" + this.username, this.meetings.indexOf(meeting))
+                    .then(() => {
+                        this.fetchData();
+                        this.success('Spotkanie zostało usunięte.');
+                    })
+                    .catch(response => this.failure('Błąd przy usuwaniu spotkania. Kod odpowiedzi: ' + response.status));
             },
             removeMeetingParticipant(meeting) {
                 meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
             },
             deleteMeeting(meeting) {
-                //this.meetings.splice(this.meetings.indexOf(meeting), 1);
                 this.$http.delete('meetings/' + meeting.id, this.meetings.indexOf(meeting))
                     .then(() => {
                         this.fetchData();

@@ -97,7 +97,7 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "/{id}/{login}", method = RequestMethod.POST)
-    public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") long id, @PathVariable("login") String login) {
+    public ResponseEntity<?> addMeetingParticipant(@PathVariable("id") long id, @PathVariable("login") String login) {
         Meeting foundMeeting = meetingService.findById(id);
         Participant foundParticipant = participantService.findByLogin(login);
         if (foundMeeting == null) {

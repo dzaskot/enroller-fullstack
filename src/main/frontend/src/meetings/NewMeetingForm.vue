@@ -26,11 +26,6 @@
             addNewMeeting() {
                 this.error = false;
                 if (this.newMeeting.title) {
-                  this.$http.post('meetings', this.newMeeting)
-                          .then(response => {
-                            //this.$emit('added', response.body);
-                          })
-                          .catch(() => this.failure('Dodawanie spotkania nieudane.'));
                     this.$emit('added', this.newMeeting);
                     this.newMeeting = {participants: []};
                     this.adding = false;
