@@ -56,7 +56,13 @@
                 meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
             },
             deleteMeeting(meeting) {
-                this.meetings.splice(this.meetings.indexOf(meeting), 1);
+                //this.meetings.splice(this.meetings.indexOf(meeting), 1);
+                this.$http.delete('meetings/' + meeting.id, this.meetings.indexOf(meeting))
+                    .then(() => {
+                        this.fetchData();
+                        this.success('Spotkanie zostało usunięte.');
+                    })
+                    .catch(response => this.failure('Błąd przy usuwaniu spotkania. Kod odpowiedzi: ' + response.status));
             }
         }
     }
