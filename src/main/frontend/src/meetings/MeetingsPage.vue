@@ -64,7 +64,11 @@
                     .catch(response => this.failure('Błąd przy dodawaniu uczestnika. Kod odpowiedzi: ' + response.status));
             },
             removeMeetingParticipant(meeting) {
-                meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+                this.$http.delete('participants/' + this.username + "/" + meeting.id)
+                    .then(() => {
+                        this.fetchData();
+                    })
+                    .catch(response => this.failure('Błąd przy usuwaniu uczestnika. Kod odpowiedzi: ' + response.status));
             },
             deleteMeeting(meeting) {
                 this.$http.delete('meetings/' + meeting.id, this.meetings.indexOf(meeting))

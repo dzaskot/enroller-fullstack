@@ -27,9 +27,10 @@ public class MeetingParticipantService {
 		return meetingParticipant;
 	}
 
-	public void deleteFromMeeting(Participant participant, Meeting meeting) {
+	public void deleteFromMeeting(Meeting meeting, Participant participant) {
 		Transaction transaction = this.session.beginTransaction();
-		session.createQuery("DELETE FROM MeetingParticipant mp WHERE mp.meeting.id = :id AND mp.participant.login = :login")
+
+		session.createQuery("DELETE FROM MeetingParticipant mp WHERE mp.id.meeting = :id AND mp.id.participant = :login")
 				.setLong("id", meeting.getId())
 				.setString("login", participant.getLogin())
 				.executeUpdate();

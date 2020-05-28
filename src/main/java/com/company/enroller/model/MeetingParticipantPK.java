@@ -12,11 +12,11 @@ class MeetingParticipantPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
+    protected Meeting meeting;
 
     @ManyToOne
     @JoinColumn(name = "participant_login")
-    private Participant participant;
+    protected Participant participant;
 
     public MeetingParticipantPK() {
     }
