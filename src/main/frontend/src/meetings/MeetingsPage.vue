@@ -2,7 +2,7 @@
   <div>
     <new-meeting-form @added="addNewMeeting($event)"></new-meeting-form>
 
-    <span v-if="meetings.length == 0">
+    <span v-if="meetings.length === 0">
                Brak zaplanowanych spotkań.
            </span>
     <h3 v-else>
@@ -29,7 +29,23 @@
                 meetings: []
             };
         },
+        created () {
+            // fetch the data when the view is created and the data is
+            // already being observed
+            this.fetchData()
+        },
+        watch: {
+            // call again the method if the route changes
+            '$route': 'fetchData'
+        },
         methods: {
+            fetchData () {
+                this.$http.get(`meetings`)
+                    .then(response => {
+                        this.meetings = response.body
+                    })
+                    .catch();
+            },
             addNewMeeting(meeting) {
                 this.meetings.push(meeting);
             },
