@@ -41,7 +41,7 @@ public class Meeting {
 //    @JsonIgnore
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "meeting_participant", joinColumns = {
-            @JoinColumn(name = "meeting_id")}, inverseJoinColumns = {@JoinColumn(name = "participant_login")})
+            @JoinColumn(name = "participant_login")}, inverseJoinColumns = {@JoinColumn(name = "meeting_id")})
     public Set<Participant> getParticipants() {
         return this.participants;
     }

@@ -87,7 +87,7 @@ public class ParticipantRestController {
                     HttpStatus.NOT_FOUND);
         }
 
-        //foundMeeting.getParticipants().add(foundParticipant);
+        foundMeeting.getParticipants().add(foundParticipant);
         MeetingParticipant meetingParticipant = new MeetingParticipant();
         meetingParticipant.setId(new MeetingParticipantPK(foundMeeting,foundParticipant));
         meetingParticipantService.addMeetingParticipant(meetingParticipant);
